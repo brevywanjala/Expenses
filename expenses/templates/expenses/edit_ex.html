@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Expense</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .messages li {
+            color: red;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        form p {
+            margin-bottom: 15px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        form input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        p a {
+            color: #333;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Expense</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('edit_ex', expense_id=expense[0]) }}" method="POST" enctype="multipart/form-data">
+        <label for="item">Item:</label>
+        <input type="text" id="item" name="item" value="{{ expense[1] }}">
+        
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" value="{{ expense[2] }}">
+        
+        <label for="receipt">Receipt:</label>
+        <input type="file" id="receipt" name="receipt">
+        
+        <input type="submit" value="Update">
+    </form>
+    
+
+    <p><a href="/expenses">Back to Expenses</a></p>
+</body>
+</html>

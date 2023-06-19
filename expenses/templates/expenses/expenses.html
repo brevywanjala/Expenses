@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .messages {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .messages li {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .delete-form {
+            display: inline-block;
+        }
+
+        .delete-form input[type="submit"] {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .edit-link {
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .add-link {
+            display: inline-block;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-link:hover {
+            background-color: #218838;
+        }
+
+        .total-expenses {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .search-form {
+            margin-bottom: 20px;
+          }
+          
+          .search-input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+          }
+          
+          .search-button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+          
+          .search-button:hover {
+            background-color: #45a049;
+          }
+          
+    </style>
+</head>
+<body>
+    <h1>Expenses</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form class="search-form" method="POST" action="/total_expenses">
+        <p>
+            Search by Month: 
+            <input class="search-input" type="month" name="month">
+            <input class="search-button" type="submit" value="Search">
+        </p>
+    </form>
+    
+
+    {% if expenses %}
+    <h2>Expenses for {{ month }}:</h2>
+    {% if total_amount %}
+    <p class="total-expenses">Total Expenses for {{ month }}: ${{ total_amount }}</p>
+    {% endif %}
+    <p><a class="add-link" href="{{ url_for('add_ex') }}">Add Expense</a></p>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Receipt</th>
+            <th>Timestamp</th>
+            <th>Delete</th>
+            <th>Edit</th>
+        </tr>
+        {% for expense in expenses %}
+            <tr>
+                <td>{{ expense[1] }}</td>
+                <td>${{ expense[2] }}</td>
+                <td><a href="{{ url_for('download_receipt', filename=expense[3]) }}">Download Receipt</a></td>
+                <td>{{ expense[4] }}</td>
+                <td>
+                    <form action="{{ url_for('delete_expense', expense_id=expense[0]) }}" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="receipt">
+                        <input type="submit" value="Delete">
+                    </form>
+                    
+                </td>
+                <td>
+                    <a class="edit-link" href="{{ url_for('edit_ex', expense_id=expense[0]) }}">Edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    
+
+    
+</body>
+</html>
